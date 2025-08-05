@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="list-group">
+        {% for app_label, app_data in accessible_models_by_app.items %}
+            <section>
+                <h3>{{ app_data.app_name }}</h3>
+                {% for model in app_data.models %}
+                    <a href="{{ model.url }}" class="list-group-item list-group-item-action">{{ model.name }}</a>
+                {% endfor %}
+            </section>
+            <br>
+        {% endfor %}
+    </div>
+{% endblock %}

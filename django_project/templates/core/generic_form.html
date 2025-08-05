@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block extra_head %}
+<!-- for select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />     
+{% endblock %}
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        /* Style for the form group container */
+        .form-group {
+            margin-bottom: 0;
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;  /* Minimum width for each field */
+            padding: 0 0.5rem;
+        }
+        
+        /* Style for labels */
+        .form-group label {
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        /* Ensure form controls take full width */
+        .form-control, 
+        .select2-container {
+            width: 100% !important;
+        }
+        
+        /* Horizontal scroll container */
+        .form-scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+        
+        /* Form row that holds the fields */
+        .form-row-scroll {
+            display: inline-flex;
+            min-width: min-content; /* Ensures the row is at least as wide as its contents */
+            padding: 0 0.5rem;
+        }
+        
+        /* Style for required field indicators */
+        .asteriskField {
+            color: #dc3545;
+            margin-left: 0.25rem;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ title }}</h2>
+        </div>
+        <div class="card-body table-responsive">
+            <form method="post" class="mb-4">
+                {% csrf_token %}
+                {% if form %}
+                    {{ form.media }}
+                    {{ form|crispy }}
+                {% endif %}
+
+                {% if formset %}
+                    <strong>{{ formset.prefix }}</strong>
+                    {{ formset.management_form }}
+                    {{ formset.media }}
+                    {% if formset.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ formset.errors|join:" " }}
+                    </div>
+                    {% endif %}
+                <table class="table" style="table-layout: fixed;">
+                    {% for form in formset %}
+                        {% if forloop.first %}
+                        <tr>
+                            {% for field in form.visible_fields %}
+                                <td>{{ field.label }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endif %}
+                        
+                        <tr class="formset_row">
+                        {% for field in form.visible_fields %}
+                            <td>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ field.errors|join:" " }}
+                                </div>
+                            {% endif %}
+                            </td>
+                        {% endfor %}
+                        </tr>
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+                    {% endfor %}
+                </table>
+                {% endif %}
+                <br>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="{{ cancel_url }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<!-- for select2 -->
+<script>
+    $(document).ready(function() {
+        // Initialize Select2 on all select elements
+        $('select').each(function() {
+            $(this).select2();
+        });
+        
+        // Handle form validation errors
+        $('form').on('forminvalid', function() {
+            // Reinitialize Select2 to show validation state
+            $('select').select2({
+                theme: 'bootstrap-5',
+                width: '100%'
+            });
+        });
+    });
+</script>
+
+<!-- for inline formset -->
+<script src="{% static 'formset/jquery.formset.js' %}"></script>
+<script type="text/javascript">
+    $('.formset_row').formset({
+        prefix: '{{ formset.prefix }}',
+        addCssClass: 'btn btn-primary',  
+        deleteCssClass: 'btn btn-danger',
+    });
+</script>
+{% endblock %}
