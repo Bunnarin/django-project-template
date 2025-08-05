@@ -1,70 +1,70 @@
 services:
- postgresql:
-   image: postgres
-   container_name: postgresql
-   volumes:
-     - postgresql-db:/var/lib/postgresql/data
-   ports:
-     - "5432:5432"
-   env_file:
-     - ./.env
-   environment:
-     POSTGRES_DB: ${DB_NAME}
-     POSTGRES_USER: ${DB_USER}
-     POSTGRES_PASSWORD: ${DB_PASSWORD}
-   healthcheck:
-     test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-     interval: 10s
-     timeout: 5s
-     retries: 5
-   restart: unless-stopped
+  postgresql:
+    image: postgres
+    container_name: postgresql
+    volumes:
+      - postgresql-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
- django_gunicorn:
-   build: ./
-   volumes:
-     - ./:/app
-     - ./static:/app/static
-     - ./media:/app/media
-   env_file:
-     - ./.env
-   ports:
-     - "8000:8000"
-   restart: unless-stopped
-   depends_on:
-     postgresql:
-       condition: service_healthy
+  django_gunicorn:
+    build: ./
+    volumes:
+      - ./:/app
+      - ./static:/app/static
+      - ./media:/app/media
+    env_file:
+      - ./.env
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    depends_on:
+      postgresql:
+        condition: service_healthy
 
- nginx:
-   build: 
-    context: ./nginx
-   env_file:
-     - ./.env
-   volumes:
-     - ./static:/static
-     - ./media:/media
-     - certbot-web:/vol/www
-     - certbot-certs:/etc/letsencrypt
-     - nginx-ssl-conf:/vol/nginx_ssl_conf
-   ports:
-     - "80:80"
-     - "443:443"
-   restart: unless-stopped
-   depends_on:
-     - django_gunicorn
- certbot:
-   build: ./certbot
-   environment:
-     EMAIL: ${SUPERUSER_EMAIL}
-     DOMAIN: ${DOMAIN}
-   volumes:
-     - certbot-web:/vol/www
-     - certbot-certs:/etc/letsencrypt/
-   depends_on:
-     - nginx
-   restart: unless-stopped
+  nginx:
+    build: 
+      context: ./nginx
+    env_file:
+      - ./.env
+    volumes:
+      - ./static:/static
+      - ./media:/media
+      - certbot-web:/vol/www
+      - certbot-certs:/etc/letsencrypt
+      - nginx-ssl-conf:/vol/nginx_ssl_conf
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    depends_on:
+      - django_gunicorn
+  certbot:
+    build: ./certbot
+    environment:
+      EMAIL: ${SUPERUSER_EMAIL}
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - certbot-web:/vol/www
+      - certbot-certs:/etc/letsencrypt/
+    depends_on:
+      - nginx
+    restart: unless-stopped
 
 volumes:
- postgresql-db:
- certbot-web:
- certbot-certs:
- nginx-ssl-conf:
+  postgresql-db:
+  certbot-web:
+  certbot-certs:
+  nginx-ssl-conf:

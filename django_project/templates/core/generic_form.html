@@ -5,54 +5,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />     
 {% endblock %}
-{% block extra_css %}
-    {{ block.super }}
-    <style>
-        /* Style for the form group container */
-        .form-group {
-            margin-bottom: 0;
-            display: flex;
-            flex-direction: column;
-            min-width: 150px;  /* Minimum width for each field */
-            padding: 0 0.5rem;
-        }
-        
-        /* Style for labels */
-        .form-group label {
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        
-        /* Ensure form controls take full width */
-        .form-control, 
-        .select2-container {
-            width: 100% !important;
-        }
-        
-        /* Horizontal scroll container */
-        .form-scroll-container {
-            width: 100%;
-            overflow-x: auto;
-            padding: 0.5rem 0;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        }
-        
-        /* Form row that holds the fields */
-        .form-row-scroll {
-            display: inline-flex;
-            min-width: min-content; /* Ensures the row is at least as wide as its contents */
-            padding: 0 0.5rem;
-        }
-        
-        /* Style for required field indicators */
-        .asteriskField {
-            color: #dc3545;
-            margin-left: 0.25rem;
-        }
-    </style>
-{% endblock %}
+
 {% block content %}
     <div class="card">
         <div class="card-header">
@@ -133,7 +86,7 @@
 </script>
 
 <!-- for inline formset -->
-<script src="{% static 'formset/jquery.formset.js' %}"></script>
+<script src="{% static 'js/formset.js' %}"></script>
 <script type="text/javascript">
     $('.formset_row').formset({
         prefix: '{{ formset.prefix }}',
