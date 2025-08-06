@@ -3,13 +3,14 @@
 import os
 import sys
 from pathlib import Path
+from decouple import config
 
 def main():
     """Run administrative tasks."""
     BASE_DIR = Path(__file__).resolve().parent
     PROJECT_DIR = BASE_DIR / 'django_project'
     sys.path.append(str(PROJECT_DIR))
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_project.settings.local')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', config('DJANGO_SETTINGS_MODULE', default='django_project.settings.prod'))
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
