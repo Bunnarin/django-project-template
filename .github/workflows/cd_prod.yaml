@@ -1,0 +1,48 @@
+name: "CD Production Pipeline"
+# This CD workflow triggers on manual workflow dispatch.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy_production:
+    defaults:
+      run:
+        shell: bash
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Add SSH Key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+          chmod 600 private_key
+
+      - name: Deploy to GCP VM
+        env:
+          HOSTNAME: ${{ secrets.GCP_VM_EXTERNAL_IP }}
+          USERNAME: ${{ secrets.GCP_VM_USERNAME }}
+        run: |    
+          # Create SSH config file
+          cat >> ~/.ssh/config << EOF
+          Host gcp-vm
+            HostName $HOSTNAME
+            User $USERNAME
+            IdentityFile $(pwd)/private_key
+            StrictHostKeyChecking no
+          EOF
+
+          # SSH into the GCP VM and run deployment commands
+          ssh gcp-vm '
+            cd ${{ vars.APP_DIR }}
+            git checkout main
+            git pull
+            sudo docker-compose up
+            sudo docker image prune -f
+          '
+          
+          # Clean up sensitive files
+          rm -f private_key

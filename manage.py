@@ -2,7 +2,6 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-from decouple import config
 from pathlib import Path
 
 def main():
@@ -10,7 +9,7 @@ def main():
     BASE_DIR = Path(__file__).resolve().parent
     PROJECT_DIR = BASE_DIR / 'django_project'
     sys.path.append(str(PROJECT_DIR))
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', config('DJANGO_SETTINGS_MODULE'))
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_project.settings.local')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
