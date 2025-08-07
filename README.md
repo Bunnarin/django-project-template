@@ -1,15 +1,14 @@
 **initial setup vps**
-sudo -i
-apt-get update
-apt-get install docker.io -y
+sudo apt-get update
+sudo apt-get install docker.io -y
 curl -L "https://github.com/docker/compose/releases/download/v2.21.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-apt-get install git -y
+sudo chmod +x /usr/local/bin/docker-compose
+sudo apt-get install git -y
 git clone $REPO_URL prod
 cd prod
 nano .env
 
-docker-compose run --rm certbot /app/certbot_init.sh
+sudo docker-compose run --rm certbot /app/certbot_init.sh
 cd ..
 git clone $REPO_URL staging
 cd staging
