@@ -37,9 +37,9 @@ jobs:
       - name: Build and bring up services
         run: |
           mv .env.staging .env
-          docker-compose up -d --build
-          docker-compose logs django_gunicorn
+          docker compose up -d --build
+          docker logs django_gunicorn
 
       - name: Run tests
         run: |
-          docker-compose exec django_gunicorn pytest
+          docker exec django_gunicorn pytest
