@@ -47,8 +47,15 @@ jobs:
           HOSTNAME: ${{ secrets.GCP_VM_EXTERNAL_IP }}
           USERNAME: ${{ secrets.GCP_VM_USERNAME }}
         run: |    
-          # Create SSH config file
+          # Create SSH directory and config file
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          touch ~/.ssh/config
+          chmod 600 ~/.ssh/config
+          
+          # Add VM configuration to SSH config
           cat >> ~/.ssh/config << EOF
+          
           Host gcp-vm
             HostName $HOSTNAME
             User $USERNAME
