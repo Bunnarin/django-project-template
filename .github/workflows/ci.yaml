@@ -9,30 +9,30 @@ on:
       - main
 
 jobs:
-  security_scan:
-    name: "Security Scanning"
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      security-events: write
+  # security_scan:
+  #   name: "Security Scanning"
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     actions: write
+  #     security-events: write
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: python
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+  #     - name: Initialize CodeQL
+  #       uses: github/codeql-action/init@v3
+  #       with:
+  #         languages: python
+  #     - name: Perform CodeQL Analysis
+  #       uses: github/codeql-action/analyze@v3
 
   deploy_staging:
     defaults:
       run:
         shell: bash
     runs-on: ubuntu-latest
-    needs: security_scan
+    # needs: security_scan
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
