@@ -39,31 +39,10 @@ jobs:
 
       - name: Set up SSH key
         run: |
-          # Print the username and IP to verify they are correct
-          echo "Using SSH username: ${{ secrets.GCP_VM_USERNAME }}"
-          echo "Connecting to IP: ${{ secrets.GCP_VM_EXTERNAL_IP }}"
-          
           mkdir -p ~/.ssh
-          
-          # Save the RSA private key to a file named id_rsa
-          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          
-          # Verify the file was created and check its permissions
-          echo "Checking file permissions for id_rsa..."
-          ls -l ~/.ssh/id_rsa
-          
-          # Print the public key generated from the private key
-          # This is a critical step to ensure your private key is valid and matches the public key
-          echo "Generating and printing public key from private key..."
-          ssh-keygen -y -f ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          
-          # Add the host key to known_hosts
           ssh-keyscan ${{ secrets.GCP_VM_EXTERNAL_IP }} >> ~/.ssh/known_hosts
-          
-          # Print the contents of known_hosts to verify the key was added
-          echo "Checking known_hosts file..."
-          cat ~/.ssh/known_hosts
       
       - name: Execute deployment script
         run: |
