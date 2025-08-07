@@ -42,7 +42,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
 
-      - name: Deploy to GCP VM
+      - name: run test on GCP VM
         env:
           HOSTNAME: ${{ secrets.GCP_VM_EXTERNAL_IP }}
           USERNAME: ${{ secrets.GCP_VM_USERNAME }}
@@ -56,14 +56,16 @@ jobs:
             StrictHostKeyChecking no
           EOF
 
-          # SSH into the GCP VM and run deployment commands
+          # SSH into the GCP VM and run test
           ssh gcp-vm '
-            cd staging/${{ vars.APP_DIR }}
+            cd staging
             git checkout main
             git pull
             sudo docker-compose up
             sudo docker image prune -f
-            docker compose exec django_gunicorn pytest
+            sudo docker compose exec -T django_gunicorn sh -c "pytest" && TEST_RESULT=$? || TEST_RESULT=$?
+            sudo docker-compose down -v
+            exit $TEST_RESULT
           '
           
           # Clean up sensitive files

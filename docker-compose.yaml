@@ -1,7 +1,6 @@
 services:
   postgresql:
     image: postgres
-    container_name: postgresql
     volumes:
       - postgresql-db:/var/lib/postgresql/data
     ports:
