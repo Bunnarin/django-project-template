@@ -17,8 +17,11 @@ INSTALLED_APPS = [
     # 3rd party
     'allauth',
     'allauth.account',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'cachalot',
     'auditlog',
+    'django_crontab',
     # mine
     'apps.core',
     'apps.user',
@@ -34,6 +37,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 3rd party
     "allauth.account.middleware.AccountMiddleware",
+    'auditlog.middleware.AuditlogMiddleware',
 ]
 
 ROOT_URLCONF = 'django_project.urls'
@@ -67,6 +71,7 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': 'postgresql',
         'PORT': '5432',
+        'ATOMIC_REQUESTS': True,
     }
 }
 
@@ -135,6 +140,11 @@ AUDITLOG_INCLUDE_ALL_MODELS = True
 AUDITLOG_EXCLUDE_TRACKING_MODELS = (
     "sessions",
 )
+
+# cron jobs
+CRON_JOBS = [
+    ('0 0 12 1 1/1 ? *', 'django.core.management.call_command', ['auditlogflush', '--yes'])
+]
 
 
 

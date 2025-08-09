@@ -143,6 +143,12 @@ class Command(BaseCommand):
 
     def _run_migrations(self):
         """Run makemigrations and migrate."""
-        self.stdout.write(self.style.SUCCESS('\nRunning migrations...'))
+        self.stdout.write(self.style.SUCCESS('Creating Cache Table...'))
+        subprocess.call(['python', 'manage.py', 'makemigrations'], env=os.environ.copy())
+        subprocess.call(['python', 'manage.py', 'createcachetable'], env=os.environ.copy())
+        subprocess.call(['python', 'manage.py', 'migrate'], env=os.environ.copy())
+        self.stdout.write(self.style.SUCCESS('Running migrations...'))
         subprocess.call(['python', 'manage.py', 'makemigrations'], env=os.environ.copy())
         subprocess.call(['python', 'manage.py', 'migrate'], env=os.environ.copy())
+        self.stdout.write(self.style.SUCCESS('creating superuser...'))
+        subprocess.call(['python', 'manage.py', 'create_super_user'], env=os.environ.copy())
