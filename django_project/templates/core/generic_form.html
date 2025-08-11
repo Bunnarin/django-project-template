@@ -23,12 +23,7 @@
                     <strong>{{ formset.prefix }}</strong>
                     {{ formset.management_form }}
                     {{ formset.media }}
-                    {% if formset.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ formset.errors|join:" " }}
-                    </div>
-                    {% endif %}
-                <table class="table" style="table-layout: fixed;">
+                <table class="table" style="width: auto">
                     {% for form in formset %}
                         {% if forloop.first %}
                         <tr>
@@ -68,19 +63,22 @@
 {{ block.super }}
 <!-- for select2 -->
 <script>
-    $(document).ready(function() {
-        // Initialize Select2 on all select elements
-        $('select').each(function() {
-            $(this).select2();
+    // to be called when new form get created so that they can have the select functionality as well
+    function initializeSelect2() {
+        $('select').not('.select2-hidden-accessible').select2({
+            theme: 'bootstrap-5',
+            width: '100%'
         });
+    }
+
+    $(document).ready(function() {
+        // Initialize Select2 on initial page load
+        initializeSelect2();
         
         // Handle form validation errors
         $('form').on('forminvalid', function() {
             // Reinitialize Select2 to show validation state
-            $('select').select2({
-                theme: 'bootstrap-5',
-                width: '100%'
-            });
+            initializeSelect2();
         });
     });
 </script>
@@ -92,6 +90,7 @@
         prefix: '{{ formset.prefix }}',
         addCssClass: 'btn btn-primary',  
         deleteCssClass: 'btn btn-danger',
+        added: initializeSelect2, // called the select2 init function when new form get created
     });
 </script>
 {% endblock %}

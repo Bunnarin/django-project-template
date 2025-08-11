@@ -11,6 +11,7 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
@@ -30,6 +31,7 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
+    restart: unless-stopped
 
   nginx:
     build: 
@@ -45,6 +47,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    restart: unless-stopped
     depends_on:
       - django_gunicorn
   certbot:
@@ -55,6 +58,7 @@ services:
     volumes:
       - certbot-web:/vol/www
       - certbot-certs:/etc/letsencrypt/
+    restart: unless-stopped
     depends_on:
       - nginx
 

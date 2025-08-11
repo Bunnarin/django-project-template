@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'cachalot',
     'auditlog',
     'django_crontab',
+    'pwa',
     # mine
     'apps.core',
     'apps.user',
@@ -144,6 +145,15 @@ AUDITLOG_EXCLUDE_TRACKING_MODELS = (
 # cron jobs
 CRON_JOBS = [
     ('0 0 12 1 1/1 ? *', 'django.core.management.call_command', ['auditlogflush', '--yes'])
+]
+
+# pwa
+PWA_APP_NAME = 'Django Portal'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/image/logo.png',
+        'sizes': '160x160'
+    }
 ]
 
 
