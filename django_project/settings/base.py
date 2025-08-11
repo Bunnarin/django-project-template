@@ -143,8 +143,9 @@ AUDITLOG_EXCLUDE_TRACKING_MODELS = (
 )
 
 # cron jobs
-CRON_JOBS = [
-    ('0 0 12 1 1/1 ? *', 'django.core.management.call_command', ['auditlogflush', '--yes'])
+CRONJOBS = [
+    ('0 0 12 1 1/1 ? *', 'django.core.management.call_command', ['auditlogflush', '--yes']),
+    ('0 0 12 ? * MON *', 'django.core.management.call_command', ['backup_db'])
 ]
 
 # pwa
