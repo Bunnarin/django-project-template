@@ -1,7 +1,7 @@
 FROM python:3.10-alpine
 COPY . /app
 WORKDIR /app
-RUN chmod +x backup.sh
+RUN find /app -name "backup.sh" -type f -exec chmod +x {} \; 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt gunicorn
 RUN apk add postgresql-dev

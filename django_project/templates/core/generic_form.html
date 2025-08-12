@@ -63,11 +63,13 @@
 {{ block.super }}
 <!-- for select2 -->
 <script>
-    // to be called when new form get created so that they can have the select functionality as well
     function initializeSelect2() {
-        $('select').not('.select2-hidden-accessible').select2({
-            theme: 'bootstrap-5',
-            width: '100%'
+        // Only initialize Select2 on regular select elements, not those managed by django-jsonform
+        $('select:not([name^="rjf§"])').each(function() {
+            $(this).select2({
+                theme: 'bootstrap-5',
+                width: '100%'
+            });
         });
     }
 
