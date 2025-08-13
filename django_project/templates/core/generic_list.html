@@ -30,22 +30,23 @@
 {% endblock %}
 
 {% block content %}
-    {% for action, url in actions.items %}
-        <a href="{% url url %}" class="btn btn-primary">{{ action }}</a>
-    {% endfor %}
-    <button class="btn" id="export-btn" onclick="exportTable()">Export</button>
-    {% if object_dict %}
+    {% if fields %}
     <table class="table table-hover">
         <tbody>
-            {% for key, value in object_dict.items %}
+            {% for field in fields %}
             <tr>
-                <th>{{ key }}</th>
-                <td>{{ value }}</td>
+                <th>{{ field }}</th>
+                <td>{{ object|get_attr_from_object:field }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     {% endif %}
+    {% if table_fields %}
+        {% for action, url in actions.items %}
+            <a href="{% url url %}" class="btn btn-primary">{{ action }}</a>
+        {% endfor %}
+        <button class="btn" id="export-btn" onclick="exportTable()">Export</button>
     <div class="table-container">
         <table class="table table-striped" id="data-table">
             <thead>
@@ -54,11 +55,9 @@
                     <th>Actions</th>
                 {% endif %}
                 {% for field in table_fields %}
-                    <th>{{ field }}</th>
+                    <th>{{ field|replace:'., ' }}</th>
                 {% endfor %}
-                {% if pretty_json_field %}
-                    <th style="max-width: 100%;">{{ pretty_json_field }}</th>
-                {% endif %}
+
                 </tr>
             </thead>
             <tbody>
@@ -85,16 +84,12 @@
                     {% endwith %}
                     </td>
                 {% endfor %}
-                {% if pretty_json_field %}
-                    <td style="max-width: fit-content;">
-                        {{ obj|get_attr_from_object:pretty_json_field|pretty_json }}
-                    </td>
-                {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    {% endif %}
 {% endblock %}
 
 {% block extra_js %}
@@ -102,6 +97,7 @@
 <script>
     $(document).ready(function() {
         $('#data-table').DataTable({
+            paging: false,
             initComplete: function() {
                 this.api()
                     .columns()
