@@ -1,11 +1,8 @@
-FROM python:3.10-alpine
+FROM python:3.11-slim
 COPY . /app
 WORKDIR /app
-RUN find /app -name "backup.sh" -type f -exec chmod +x {} \; 
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt gunicorn
-RUN apk add postgresql-dev
-RUN apk add --no-cache postgresql-client
+RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 CMD python manage.py createcachetable && \
     python manage.py migrate --noinput && \
